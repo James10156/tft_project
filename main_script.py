@@ -1,7 +1,11 @@
+import os
 from tft_fetcher import TFTDataFetcher
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # API configuration
-API_KEY = "INSERT KEY HERE"  # Replace with your Riot API key
+API_KEY = os.environ.get("RIOT_API_KEY")  # Replace with your Riot API key
 BASE_LEAGUE_URL = "https://europe.api.riotgames.com"  # Change region if needed
 BASE_TFT_URL = "https://euw1.api.riotgames.com"  # Change region if needed
 REGION = "EUW"
