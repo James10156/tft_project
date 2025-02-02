@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TFT Summoner Lookup</title>
+</head>
+<body>
+    <h2>Enter a Summoner Name:</h2>
+    <form method="post">
+        <input type="text" name="summoner_name" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if result %}
+        <h3>API Response:</h3>
+        <pre>{{ result }}</pre>
+    {% endif %}
+</body>
+</html>

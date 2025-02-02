@@ -1,6 +1,9 @@
+import os
 import requests
 import argparse
+from dotenv import load_dotenv
 
+load_dotenv()
 
 class TFTDataFetcher:
     def __init__(self, api_key, base_league_url, base_tft_url, region):
@@ -37,7 +40,7 @@ class TFTDataFetcher:
         else:
             return {"error": response.status_code, "message": response.text}
 
-    def win_loss_ratio(self, summoner_name):
+    def get_tft_data(self, summoner_name):
         puuid_data = self.get_puuid_by_name(summoner_name)
         if "error" in puuid_data:
             return puuid_data
@@ -58,19 +61,27 @@ class TFTDataFetcher:
         if "error" in tft_data:
             return tft_data
 
+        return tft_data
+
+    def win_loss_ratio(self,summoner_name,tft_data):
+
         # Assuming `tft_data` contains entries for win/loss data
         try:
+            output = ""
             queue_type = tft_data[0]["queueType"]
             wins = tft_data[1]["wins"]
             losses = tft_data[1]["losses"]
-            print(f"Summoner name: {summoner_name}")
-            print(f"Game Mode: {queue_type}")
-            print(f"Wins: {wins}")
-            print(f"Losses: {losses}")
-            return float(wins) / float(losses)
+            ratio = float(wins) / float(losses)
+
+            output += f"Summoner ID: {summoner_name} \n"
+            output += f"Game Mode: {queue_type} \n"
+            output += f"Wins: {wins} \n"
+            output += f"Losses: {losses} \n"
+            output += "Win/Loss Ratio: " + str(ratio)
+            return output
+
         except (IndexError, KeyError) as e:
             return {"error": "Invalid data structure", "details": str(e)}
-
 
 def main():
     # Parse command-line arguments
@@ -81,7 +92,7 @@ def main():
     summoner_name = args.arg
 
     # API configuration
-    API_KEY = "INSERT KEY HERE"  # Replace with your Riot API key
+    API_KEY = os.environ.get("RIOT_API_KEY")  # Replace with your Riot API key
     BASE_LEAGUE_URL = "https://europe.api.riotgames.com"  # Change region if needed
     BASE_TFT_URL = "https://euw1.api.riotgames.com"  # Change region if needed
     REGION = "EUW"
@@ -90,14 +101,15 @@ def main():
     tft_data_fetcher = TFTDataFetcher(API_KEY, BASE_LEAGUE_URL, BASE_TFT_URL, REGION)
 
     # Get win/loss ratio
-    result = tft_data_fetcher.win_loss_ratio(summoner_name)
+    tft_data = tft_data_fetcher.get_tft_data(summoner_name)
+    result = tft_data_fetcher.win_loss_ratio(summoner_name,tft_data)
 
     if isinstance(result, dict) and "error" in result:
         print(f"Error: {result['error']}")
         if "details" in result:
             print(f"Details: {result['details']}")
     else:
-        print(f"Win/Loss Ratio: {result:.2f}")
+        print(f"{result}")
 
 
 if __name__ == "__main__":
