@@ -1,8 +1,11 @@
 import os
 from tft_fetcher import TFTDataFetcher
 from dotenv import load_dotenv
+from flask import Flask, request, render_template
 
 load_dotenv()
+
+app = Flask(__name__)
 
 # API configuration
 API_KEY = os.environ.get("RIOT_API_KEY")  # Replace with your Riot API key
@@ -16,13 +19,17 @@ fetcher = TFTDataFetcher(API_KEY, BASE_LEAGUE_URL, BASE_TFT_URL, REGION)
 # Summoner name to fetch data for
 summoner_name = "Halo214"
 
-# Get win/loss ratio
-result = fetcher.win_loss_ratio(summoner_name)
+@app.route("/", methods=["GET", "POST"])
+def index():
+    result = None
 
-# Print the result
-if isinstance(result, dict) and "error" in result:
-    print(f"Error: {result['error']}")
-    if "details" in result:
-        print(f"Details: {result['details']}")
-else:
-    print(f"Win/Loss Ratio for {summoner_name}: {result:.2f}")
+    if request.method == "POST":
+        summoner_name = request.form["summoner_name"]
+        tft_data = fetcher.get_tft_data(summoner_name)
+        result = fetcher.win_loss_ratio(summoner_name,tft_data)
+        print(result)
+
+    return render_template("index.html", result=result)
+
+if __name__ == "__main__":
+    app.run(debug=True)
