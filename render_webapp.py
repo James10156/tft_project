@@ -27,6 +27,7 @@ def index():
         summoner_name = request.form["summoner_name"]
         tft_data = fetcher.get_tft_data(summoner_name)
         result = fetcher.win_loss_ratio(summoner_name,tft_data)
+        result = result.replace("\n", "<br>")
         print(result)
 
     return render_template("index.html", result=result)

@@ -4,17 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TFT Summoner Lookup</title>
+    <!-- Link to Bootstrap CSS for styling -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            text-align: center;
+        }
+        .result {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .card {
+            margin-top: 20px;
+        }
+        pre {
+            white-space: pre-wrap; /* Makes the text wrap inside the <pre> tag */
+            word-wrap: break-word; /* Breaks long words */
+        }
+    </style>
 </head>
 <body>
-    <h2>Enter a Summoner Name:</h2>
-    <form method="post">
-        <input type="text" name="summoner_name" required>
-        <button type="submit">Search</button>
-    </form>
+    <div class="container">
+        <!-- Page header -->
+        <div class="header">
+            <h1 class="display-4">TFT Summoner Lookup</h1>
+            <p class="lead">Enter a Summoner Name to fetch Teamfight Tactics stats.</p>
+        </div>
 
-    {% if result %}
-        <h3>API Response:</h3>
-        <pre>{{ result }}</pre>
-    {% endif %}
+        <!-- Form to input summoner name -->
+        <form method="POST">
+            <div class="form-group">
+                <input type="text" name="summoner_name" class="form-control" placeholder="Summoner Name" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-lg">Search</button>
+            </div>
+        </form>
+
+        <!-- Result section -->
+        {% if result %}
+        <div class="result">
+            <h3>API Response:</h3>
+            <div class="card">
+                <div class="card-body">
+                    <pre>{{ result | safe }}</pre>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Link to Bootstrap JS (Optional for more interactivity) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
