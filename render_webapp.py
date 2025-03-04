@@ -16,13 +16,15 @@ REGION = "EUW"
 # Create Class instance
 fetcher = TFTDataFetcher(API_KEY, BASE_LEAGUE_URL, BASE_TFT_URL, REGION)
 
+
 # Utility function to handle common logic for fetching and processing TFT data
 def get_tft_data_for_summoner(summoner_name):
     tft_data = fetcher.get_tft_data(summoner_name)
     result = fetcher.win_loss_ratio(summoner_name, tft_data)
-    if type(result) == "dict":
+    if isinstance(result, dict):
         result = result.replace("\n", "<br>")
     return result
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -45,9 +47,11 @@ def index():
 
     return render_template("index.html", result=result)
 
+
 @app.route('/', methods=["GET", "POST"])
 def players_stats():
     print("Back to default page")
+
 
 @app.route('/compare_friends',methods=["GET", "POST"])
 def compare_friends():
@@ -92,6 +96,7 @@ def compare_friends():
         print("Both summoner IDs are required.")
 
     return render_template("compare_friends.html", result=result)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
