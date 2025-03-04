@@ -16,13 +16,15 @@ REGION = "EUW"
 # Create Class instance
 fetcher = TFTDataFetcher(API_KEY, BASE_LEAGUE_URL, BASE_TFT_URL, REGION)
 
+
 # Utility function to handle common logic for fetching and processing TFT data
 def get_tft_data_for_summoner(summoner_name):
     tft_data = fetcher.get_tft_data(summoner_name)
     result = fetcher.win_loss_ratio(summoner_name, tft_data)
-    if type(result) == "dict":
+    if isinstance(result, dict):
         result = result.replace("\n", "<br>")
     return result
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -45,9 +47,11 @@ def index():
 
     return render_template("index.html", result=result)
 
+
 @app.route('/', methods=["GET", "POST"])
 def players_stats():
     print("Back to default page")
+
 
 @app.route('/compare_friends')
 def compare_friends():
@@ -56,20 +60,21 @@ def compare_friends():
     friend_summoner_id = request.form.get("friend_summoner_id")
 
     if summoner_id and friend_summoner_id:
-    # Call your logic to fetch data for both summoners and compare
+        # Call your logic to fetch data for both summoners and compare
         user_data = get_tft_data_for_summoner(summoner_id)
         friend_data = get_tft_data_for_summoner(friend_summoner_id)
 
         # Implement logic to compare both users' stats
         result = {
-           "User": summoner_id,
-           "Friend": friend_summoner_id,
-           "Comparison": "Comparison Logic Here"  # Replace with actual comparison logic
+            "User": summoner_id,
+            "Friend": friend_summoner_id,
+            "Comparison": "Comparison Logic Here"  # Replace with actual comparison logic
         }
     else:
         print("Both summoner IDs are required.")
 
     return render_template("compare_friends.html", result=result)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

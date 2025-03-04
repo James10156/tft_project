@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class TFTDataFetcher:
     def __init__(self, api_key, base_league_url, base_tft_url, region):
         self.api_key = api_key
@@ -63,7 +64,8 @@ class TFTDataFetcher:
 
         return tft_data
 
-    def win_loss_ratio(self,summoner_name,tft_data):
+    @staticmethod
+    def win_loss_ratio(summoner_name, tft_data):
 
         # Assuming `tft_data` contains entries for win/loss data
         try:
@@ -71,7 +73,7 @@ class TFTDataFetcher:
             queue_type = tft_data[0]["queueType"]
             wins = tft_data[1]["wins"]
             losses = tft_data[1]["losses"]
-            ratio = float(wins) / float(losses)
+            ratio = round(float(wins) / float(losses), 2)
 
             output += f"Summoner ID: {summoner_name} \n"
             output += f"Game Mode: {queue_type} \n"
@@ -82,6 +84,7 @@ class TFTDataFetcher:
 
         except (IndexError, KeyError) as e:
             return {"error": "Invalid data structure", "details": str(e)}
+
 
 def main():
     # Parse command-line arguments
