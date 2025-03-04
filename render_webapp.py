@@ -49,7 +49,7 @@ def index():
 def players_stats():
     print("Back to default page")
 
-@app.route('/compare_friends')
+@app.route('/compare_friends',methods=["GET", "POST"])
 def compare_friends():
     result = None
     summoner_id = request.form.get("summoner_id")
@@ -57,14 +57,36 @@ def compare_friends():
 
     if summoner_id and friend_summoner_id:
     # Call your logic to fetch data for both summoners and compare
-        user_data = get_tft_data_for_summoner(summoner_id)
-        friend_data = get_tft_data_for_summoner(friend_summoner_id)
+        result_string = ""
+        user_data = fetcher.get_tft_data(summoner_id)
+        friend_data = fetcher.get_tft_data(friend_summoner_id)
+
+        user_wins = user_data[1]["wins"]
+        friend_wins = friend_data[1]["wins"]
+
+        if (user_wins < friend_wins):
+            result_string = friend_summoner_id
+            result_string += " is the superior TFTer with " 
+            result_string += str(friend_wins)
+            result_string += " wins!"
+        elif (user_wins > friend_wins):
+            result_string = summoner_id
+            result_string += " is the superior TFTer with " 
+            result_string += str(user_wins)
+            result_string += " wins!"
+        else:
+            result_string = summoner_id
+            result_string += " and " 
+            result_string += friend_summoner_id
+            result_string += " are equally versed!"
 
         # Implement logic to compare both users' stats
         result = {
-           "User": summoner_id,
-           "Friend": friend_summoner_id,
-           "Comparison": "Comparison Logic Here"  # Replace with actual comparison logic
+           "User 1": summoner_id,
+           "User 2": friend_summoner_id,
+           "User 1 Wins": user_wins,
+           "User 2 Wins": friend_wins,
+           "ZComparison": result_string  # Replace with actual comparison logic
         }
     else:
         print("Both summoner IDs are required.")
